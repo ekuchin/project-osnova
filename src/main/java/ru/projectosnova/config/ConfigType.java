@@ -7,6 +7,7 @@ import javax.persistence.Id;
 public class ConfigType {
     @Id
     private String name;
+    private String category;
     private String storage;
 
     public ConfigType(String name, String storage) {
@@ -28,6 +29,14 @@ public class ConfigType {
 
     public void setStorage(String storage) {
         this.storage = storage;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     @Override

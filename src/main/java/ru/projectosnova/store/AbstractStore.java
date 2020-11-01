@@ -1,35 +1,41 @@
 package ru.projectosnova.store;
 
 import ru.projectosnova.config.ConfigStorage;
+import ru.projectosnova.config.ConfigType;
 
 public abstract class AbstractStore {
-    private ConfigStorage config;
+    protected ConfigStorage config;
+    protected ConfigType type;
 
-    public AbstractStore(ConfigStorage config) {
+    public AbstractStore(ConfigType type, ConfigStorage config) {
+        this.type = type;
         this.config = config;
     }
 
-    abstract public String create(String objectTypeName, String json, String params)throws Exception;
+    public ConfigStorage getConfig() {
+        return config;
+    }
 
-    /*
-	//CRUD operations
-	abstract public String create(String objectTypeName,String json)throws Exception;
-	abstract public String create(String objectTypeName, String json, String params)throws Exception;
+    public void setConfig(ConfigStorage config) {
+        this.config = config;
+    }
 
-	abstract public String read(String unid,String params)throws Exception;
-	abstract public String read(String unid)throws Exception;
+    public ConfigType getType() {
+        return type;
+    }
 
-	abstract public boolean update(String unid, String json)throws Exception;
-	abstract public boolean update(String unid, String json, boolean replaceAllItems)throws Exception;
-	abstract public boolean update(String unid, String json, String params)throws Exception;
-	abstract public boolean update(String unid, String json, boolean replaceAllItems, String params)throws Exception;
+    public void setType(ConfigType type) {
+        this.type = type;
+    }
 
-	abstract public boolean delete(String unid, String params)throws Exception;
-	abstract public boolean delete(String unid)throws Exception;
+    //CRUD operations
+    abstract public String create(Object object)throws Exception;
+    abstract public Object read(String id)throws Exception;
+    //abstract public boolean update(String id, Object object)throws Exception;
+    //abstract public boolean delete(String id)throws Exception;
 
-	//Collection operations
-	abstract public String getCollection(String collection, String params) throws Exception;
-	abstract public String searchByKey(String collection, String key, boolean exactMatch, String params)throws Exception;
- */
+    //Collection operations
+    //findAll
+    //findByKey
 
 }

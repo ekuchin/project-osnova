@@ -1,15 +1,63 @@
 package ru.projectosnova.store;
 
 import ru.projectosnova.config.ConfigStorage;
+import ru.projectosnova.config.ConfigType;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.Base64;
 
 public class DominoStore extends AbstractStore {
 
-    public DominoStore(ConfigStorage config) {
-        super(config);
+    public DominoStore(ConfigType type, ConfigStorage config) {
+        super(type, config);
     }
 
-    public String create(String objectTypeName, String json, String params)throws Exception{
-        return("");
+    public String create(Object object)throws Exception{
+        //TODO return id
+        return("id");
+    }
+
+    @Override
+    public Object read(String id) throws Exception {
+        String url=this.getConfig().getUrl()+"/api/data/documents/unid/"+id+"?compact=true";
+
+        HttpResponse<String> response = sendRequest(url, "GET","","");
+
+        if (response.statusCode()==200){
+            return response.body(); // ??? JSON
+        }
+        else{
+            throw new Exception(response.body());
+        }
+    }
+
+    //Private
+    private String getBasicAuthToken(){
+        String token = this.getConfig().getUsername()+":"+this.getConfig().getPassword();
+        token = "Basic "+ Base64.getEncoder().encodeToString(token.getBytes());
+        return (token);
+    }
+
+    private HttpResponse<String> sendRequest(String url, String method, String json, String params) throws IOException, InterruptedException {
+
+        if(!params.equals("")) {
+            url=url+"?"+params;
+        }
+        HttpClient client = HttpClient.newBuilder()
+                .build();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .method(method,HttpRequest.BodyPublishers.ofString(json))
+                .setHeader("Authorization", getBasicAuthToken())
+                .setHeader("Accept-Charset", "UTF-8")
+                .setHeader("Content-Type", "application/json")
+                .build();
+
+        return client.send(request, HttpResponse.BodyHandlers.ofString());
     }
 
 }
@@ -136,34 +184,7 @@ public class DominoDataSource extends DataSource {
         return getCollection(collection,keyParams);
     }
 
-    //Private
-    private String getBasicAuthToken(){
-        String token = getUserName()+":"+getPassword();
-        token = "Basic "+Base64.getEncoder().encodeToString(token.getBytes());
-        return (token);
-    }
 
-    private String getUrl(){
-        return getProtocol()+"://"+getHost()+":"+getPort()+getUri();
-    }
-
-    private HttpResponse<String> sendRequest(String url, String method, String json, String params) throws IOException, InterruptedException {
-
-        if(!params.equals("")) {
-            url=url+"?"+params;
-        }
-        HttpClient client = HttpClient.newBuilder()
-                .build();
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url))
-                .method(method,HttpRequest.BodyPublishers.ofString(json))
-                .setHeader("Authorization", getBasicAuthToken())
-                .setHeader("Accept-Charset", "UTF-8")
-                .setHeader("Content-Type", "application/json")
-                .build();
-
-        return client.send(request, HttpResponse.BodyHandlers.ofString());
-    }
 
 }
  */

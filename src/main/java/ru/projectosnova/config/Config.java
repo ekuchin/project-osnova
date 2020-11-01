@@ -33,8 +33,9 @@ public class Config {
         //types = repoTypes.findAll();
     }
 
-    public AbstractStore getStore(String typeName) throws Exception {
+    public AbstractStore getStore(String category, String typeName) throws Exception {
       ConfigType type = types.stream()
+              .filter(t->t.getCategory().equals(category))
               .filter(t->t.getName().equals(typeName))
               .findFirst()
               .orElseThrow(()->new Exception("Object type not found - "+typeName));
@@ -44,15 +45,15 @@ public class Config {
               .findFirst()
               .orElseThrow(()->new Exception("Store type not found - "+type.getStorage()));
 
-        return getStore(config);
+        return getStore(type, config);
     };
 
-    private AbstractStore getStore(ConfigStorage config) throws Exception {
+    private AbstractStore getStore(ConfigType type, ConfigStorage config) throws Exception {
         switch(config.getType()) {
             case "domino":
-                return new DominoStore(config);
+                return new DominoStore(type, config);
             case "mongo":
-                return new MongoStore(config);
+                return new MongoStore(type, config);
             default:
                 throw new Exception("Store type not found - "+config.getName());
 
