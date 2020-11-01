@@ -1,6 +1,8 @@
 package ru.projectosnova.store;
 
-import ru.projectosnova.config.ConfigStorage;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import ru.projectosnova.config.ConfigStore;
 import ru.projectosnova.config.ConfigType;
 
 import java.io.IOException;
@@ -10,36 +12,119 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Base64;
 
-public class DominoStore extends AbstractStore {
+public class DominoStore extends Store {
 
-    public DominoStore(ConfigType type, ConfigStorage config) {
+    public DominoStore(ConfigType type, ConfigStore config) {
         super(type, config);
     }
 
+    //CRUD operations
+    //==========================
     public String create(Object object)throws Exception{
-        //TODO return id
-        return("id");
+
+        String url=getUrl()+"/api/data/documents?form="+type.getName();
+        String json =getJson(object);
+
+        HttpResponse<String> response = sendRequest(url, "POST",json,"");
+
+        if (response.statusCode()!=201){
+            throw new Exception("Error "+response.statusCode()+" "+response.body());
+        }
+        String id=response.headers().allValues("location").get(0);
+        id = id.substring(id.indexOf("id/")+5);
+        return(id);
+
     }
 
+    //==========================
     @Override
     public Object read(String id) throws Exception {
-        String url=this.getConfig().getUrl()+"/api/data/documents/unid/"+id+"?compact=true";
+        String url=getUrl()
+                +"/api/data/documents/unid/"+id+"?compact=true";
+
+        HttpResponse<String> response = sendRequest(url, "GET","","");
+
+        if (response.statusCode()!=200){
+            throw new Exception(response.body());
+        }
+        return response.body();
+    }
+
+    //==========================
+
+    public boolean update(String id, Object object, boolean replaceAll)throws Exception{
+        String url=getUrl()+"/api/data/documents/unid/"+id;
+
+        String method="PATCH";
+        if (replaceAll){
+            method="PUT";
+        }
+
+        String json=getJson(object);
+
+        HttpResponse<String> response = sendRequest(url, method,json,"");
+
+        if (response.statusCode()!=200){
+            throw new Exception(response.body());
+        }
+        return true;
+    }
+
+    public boolean update(String id, Object object)throws Exception{
+        return update(id, object, false);
+    }
+
+    //==========================
+    public boolean delete(String id)throws Exception {
+        String url=getUrl()+"/api/data/documents/unid/"+id;
+
+        HttpResponse<String> response = sendRequest(url, "DELETE","","");
+
+        if (response.statusCode()!=200){
+            throw new Exception(response.body());
+        }
+        return true;
+    }
+
+    //Collection operations
+    //==========================
+    public Object findAll(String collection) throws Exception {
+        String url=getUrl()
+                +"/api/data/collections/name/"+collection;
 
         HttpResponse<String> response = sendRequest(url, "GET","","");
 
         if (response.statusCode()==200){
-            return response.body(); // ??? JSON
+            return response.body();
         }
         else{
             throw new Exception(response.body());
         }
     }
 
+    //==========================
     //Private
+    private String getUrl(){
+        return this.getConfig().getHost()
+                +this.getType().getUri();
+    }
+
     private String getBasicAuthToken(){
         String token = this.getConfig().getUsername()+":"+this.getConfig().getPassword();
         token = "Basic "+ Base64.getEncoder().encodeToString(token.getBytes());
         return (token);
+    }
+
+    private String getJson(Object object) throws JsonProcessingException {
+
+        if(object instanceof String){
+            return (String) object;
+        }
+        else{
+            ObjectMapper objectMapper = new ObjectMapper();
+            return objectMapper.writeValueAsString(object);
+        }
+
     }
 
     private HttpResponse<String> sendRequest(String url, String method, String json, String params) throws IOException, InterruptedException {
@@ -64,110 +149,6 @@ public class DominoStore extends AbstractStore {
 
 /*
 public class DominoDataSource extends DataSource {
-
-    //Create
-    public String create(String objectTypeName, String json, String params)throws Exception{
-
-        String url=getUrl()+"/api/data/documents?form="+objectTypeName;
-
-        HttpResponse<String> response = sendRequest(url, "POST",json,params);
-
-        if (response.statusCode()==201){
-            String unid=response.headers().allValues("location").get(0);
-            unid=unid.substring(unid.indexOf("unid/")+5);
-            return(unid);
-        }
-        else{
-            throw new Exception("Error "+response.statusCode()+" "+response.body());
-        }
-
-    }
-
-    public String create(String objectTypeName, String json)throws Exception{
-        return(this.create(objectTypeName,json,""));
-    }
-
-    //Read
-    public String read(String unid,String params) throws Exception {
-        String url=getUrl()+"/api/data/documents/unid/"+unid+"?compact=true";
-
-        HttpResponse<String> response = sendRequest(url, "GET","",params);
-
-        if (response.statusCode()==200){
-            return response.body();
-        }
-        else{
-            throw new Exception(response.body());
-        }
-    }
-
-    public String read(String unid) throws Exception {
-        return this.read(unid,"");
-    }
-
-    //Update
-    public boolean update(String unid, String json, boolean replaceAllItems, String params)throws Exception{
-
-        String url=getUrl()+"/api/data/documents/unid/"+unid;
-
-        String method="PATCH";
-        if (replaceAllItems){
-            method="PUT";
-        }
-
-        HttpResponse<String> response = sendRequest(url, method,json,params);
-
-        if (response.statusCode()==200){
-            return(true);
-        }
-        else{
-            throw new Exception(response.body());
-        }
-
-    }
-
-    public boolean update(String unid, String json)throws Exception{
-        return this.update(unid,json, false,"");
-    }
-    public boolean update(String unid, String json, boolean replaceAllItems)throws Exception{
-        return this.update(unid,json, replaceAllItems,"");
-    }
-    public boolean update(String unid, String json, String params)throws Exception{
-        return this.update(unid,json, false,"");
-    }
-
-    //Delete
-    public boolean delete(String unid, String params)throws Exception{
-
-        String url=getUrl()+"/api/data/documents/unid/"+unid;
-
-        HttpResponse<String> response = sendRequest(url, "DELETE","",params);
-
-        if (response.statusCode()==200){
-            return(true);
-        }
-        else{
-            throw new Exception(response.body());
-        }
-    }
-
-    public boolean delete(String unid)throws Exception{
-        return this.delete(unid,"");
-    }
-
-    public String getCollection(String collection, String params) throws Exception {
-        String url=getUrl()+"/api/data/collections/name/"+collection;
-
-        HttpResponse<String> response = sendRequest(url, "GET","",params);
-
-        if (response.statusCode()==200){
-            return response.body();
-        }
-        else{
-            throw new Exception(response.body());
-        }
-
-    }
 
     public String searchByKey(String collection, String key, boolean exactMatch, String params) throws Exception {
         String keyParams="systemcolumns=0x0000&compact=true";

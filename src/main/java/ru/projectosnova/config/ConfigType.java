@@ -5,14 +5,27 @@ import javax.persistence.Id;
 
 @Entity
 public class ConfigType {
-    @Id
-    private String name;
-    private String category;
-    private String storage;
 
-    public ConfigType(String name, String storage) {
+    @Id
+    private Long id;
+    private String category;
+    private String name;
+    private String storage;
+    private String uri;
+
+    public ConfigType(String category, String name,  String storage, String uri) {
+        this.category = category;
         this.name = name;
         this.storage = storage;
+        this.uri = uri;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -37,6 +50,14 @@ public class ConfigType {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public String getUri() {
+        return uri;
+    }
+
+    public void setUri(String uri) {
+        this.uri = uri;
     }
 
     @Override

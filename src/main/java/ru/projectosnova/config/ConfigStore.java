@@ -4,18 +4,18 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 @Entity
-public class ConfigStorage {
+public class ConfigStore {
     @Id
     private String name;
     private String type;
-    private String url;
+    private String host;
     private String username;
     private String password;
 
-    public ConfigStorage(String name, String type, String url, String username, String password) {
+    public ConfigStore(String name, String type, String host, String username, String password) {
         this.name = name;
         this.type = type;
-        this.url = url;
+        this.host = host;
         this.username = username;
         this.password = password;
     }
@@ -36,12 +36,12 @@ public class ConfigStorage {
         this.type = type;
     }
 
-    public String getUrl() {
-        return url;
+    public String getHost() {
+        return host;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setHost(String host) {
+        this.host = host;
     }
 
     public String getUsername() {
@@ -62,10 +62,9 @@ public class ConfigStorage {
 
     @Override
     public String toString() {
-        return "Storage{" +
+        return "ConfigStore{" +
                 "name='" + name + '\'' +
                 ", type='" + type + '\'' +
-                ", url='" + url + '\'' +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 '}';

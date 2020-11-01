@@ -2,11 +2,11 @@ package ru.projectosnova.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.projectosnova.store.AbstractStore;
+import ru.projectosnova.store.Store;
 import ru.projectosnova.store.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 @Service
 public class Config {
@@ -14,41 +14,41 @@ public class Config {
     @Autowired
     private ConfigTypeRepository repoTypes;
     @Autowired
-    private ConfigStorageRepository repoStorages;
+    private ConfigStoreRepository repoStorages;
 
-    private List<ConfigStorage> storages;
-    private List<ConfigType> types;
+    private ArrayList<ConfigStore> storages;
+    private ArrayList<ConfigType> types;
 
     public Config() {
-        ConfigStorage domino = new ConfigStorage("domino-test", "domino", "https://localhost:443/osnova/config.nsf", "domino", "domino");
-        ConfigStorage mongo = new ConfigStorage("mongo-test", "mongo", "mongodb://localhost:27017/osnova-config", "mongo", "mongo");
+        ConfigStore domino = new ConfigStore("domino-test", "domino","https://localhost:443", "domino", "domino");
+        ConfigStore mongo = new ConfigStore("mongo-test", "mongo","mongodb://localhost:27017", "mongo", "mongo");
 
-        ConfigType cars = new ConfigType("cars","domino-test");
-        ConfigType cats = new ConfigType("cats","mongo-test");
+        ConfigType dogs = new ConfigType("mk","dogs","domino-test","/osnova/config.nsf");
+        ConfigType cats = new ConfigType("mk","cats", "mongo-test", "/osnova-config");
 
-        this.storages = Arrays.asList(domino,mongo);
-        this.types = Arrays.asList(cars,cats);
+        this.storages = new ArrayList<>(Arrays.asList(domino,mongo));
+        this.types = new ArrayList<>(Arrays.asList(dogs,cats));
 
         //storages = repoStorages.findAll();
         //types = repoTypes.findAll();
     }
 
-    public AbstractStore getStore(String category, String typeName) throws Exception {
+    public Store getStore(String category, String typeName) throws Exception {
       ConfigType type = types.stream()
               .filter(t->t.getCategory().equals(category))
               .filter(t->t.getName().equals(typeName))
               .findFirst()
-              .orElseThrow(()->new Exception("Object type not found - "+typeName));
+              .orElseThrow(()->new Exception("Object type not found - "+category+", "+typeName));
 
-      ConfigStorage config = storages.stream()
+      ConfigStore config = storages.stream()
               .filter(t->t.getName().equals(type.getStorage()))
               .findFirst()
               .orElseThrow(()->new Exception("Store type not found - "+type.getStorage()));
 
         return getStore(type, config);
-    };
+    }
 
-    private AbstractStore getStore(ConfigType type, ConfigStorage config) throws Exception {
+    private Store getStore(ConfigType type, ConfigStore config) throws Exception {
         switch(config.getType()) {
             case "domino":
                 return new DominoStore(type, config);
@@ -59,5 +59,14 @@ public class Config {
 
         }
     }
+
+    public void addStore(ConfigStore store){
+        this.storages.add(store);
+    }
+
+    public void addType(ConfigType type){
+        this.types.add(type);
+    }
+
 
 }

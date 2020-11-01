@@ -1,22 +1,22 @@
 package ru.projectosnova.store;
 
-import ru.projectosnova.config.ConfigStorage;
+import ru.projectosnova.config.ConfigStore;
 import ru.projectosnova.config.ConfigType;
 
-public abstract class AbstractStore {
-    protected ConfigStorage config;
+public abstract class Store {
+    protected ConfigStore config;
     protected ConfigType type;
 
-    public AbstractStore(ConfigType type, ConfigStorage config) {
+    public Store(ConfigType type, ConfigStore config) {
         this.type = type;
         this.config = config;
     }
 
-    public ConfigStorage getConfig() {
+    public ConfigStore getConfig() {
         return config;
     }
 
-    public void setConfig(ConfigStorage config) {
+    public void setConfig(ConfigStore config) {
         this.config = config;
     }
 
@@ -31,11 +31,10 @@ public abstract class AbstractStore {
     //CRUD operations
     abstract public String create(Object object)throws Exception;
     abstract public Object read(String id)throws Exception;
-    //abstract public boolean update(String id, Object object)throws Exception;
-    //abstract public boolean delete(String id)throws Exception;
+    abstract public boolean update(String id, Object object)throws Exception;
+    abstract public boolean delete(String id)throws Exception;
 
     //Collection operations
-    //findAll
+    abstract public Object findAll(String collection) throws Exception;
     //findByKey
-
 }

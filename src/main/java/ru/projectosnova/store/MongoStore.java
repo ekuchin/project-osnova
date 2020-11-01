@@ -1,11 +1,11 @@
 package ru.projectosnova.store;
 
-import ru.projectosnova.config.ConfigStorage;
+import ru.projectosnova.config.ConfigStore;
 import ru.projectosnova.config.ConfigType;
 
-public class MongoStore extends AbstractStore{
+public class MongoStore extends Store {
 
-    public MongoStore(ConfigType type, ConfigStorage config) {
+    public MongoStore(ConfigType type, ConfigStore config) {
         super(type, config);
     }
 
@@ -18,4 +18,21 @@ public class MongoStore extends AbstractStore{
     public Object read(String id) throws Exception {
         return null;
     }
+
+    @Override
+    public boolean update(String id, Object object) throws Exception {
+        return false;
+    }
+
+    @Override
+    public boolean delete(String id) throws Exception {
+        return false;
+    }
+
+    @Override
+    public Object findAll(String collection) throws Exception {
+        return null;
+    }
+
+
 }

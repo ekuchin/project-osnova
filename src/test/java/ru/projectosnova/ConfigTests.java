@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.projectosnova.config.*;
+import ru.projectosnova.store.Store;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -14,18 +15,19 @@ public class ConfigTests {
     private Config config;
 
     @Test
-    public void getStoragebyNameTest() throws Exception {
+    public void storageReadTest() throws Exception {
 
-        /*
-        String configType = config.getStore("cars").getType();
-        assertThat(configType).isEqualTo("domino");
+        ConfigStore mk2auto = new ConfigStore("domino-dev", "domino","https://www.project-osnova.ru", "", "");
+        config.addStore(mk2auto);
 
-        configType = config.getStore("cats").getType();
-        assertThat(configType).isEqualTo("mongo");
+        ConfigType cars = new ConfigType("mk","cars","domino-dev","");
+        config.addType(cars);
 
-         */
+        Store store = config.getStore("mk","cars");
+        System.out.println(store.findAll("All"));
+
+        assertThat(store.getConfig().getType()).isEqualTo("domino");
 
     }
-
 
 }
