@@ -1,18 +1,14 @@
 package ru.projectosnova.config;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+public class ConfigConnection {
 
-@Entity
-public class ConfigStore {
-    @Id
     private String name;
     private String type;
     private String host;
     private String username;
     private String password;
 
-    public ConfigStore(String name, String type, String host, String username, String password) {
+    public ConfigConnection(String name, String type, String host, String username, String password) {
         this.name = name;
         this.type = type;
         this.host = host;

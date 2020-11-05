@@ -2,7 +2,7 @@ package ru.projectosnova.store;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ru.projectosnova.config.ConfigStore;
+import ru.projectosnova.config.ConfigConnection;
 import ru.projectosnova.config.ConfigType;
 
 import java.io.IOException;
@@ -14,7 +14,7 @@ import java.util.Base64;
 
 public class DominoStore extends Store {
 
-    public DominoStore(ConfigType type, ConfigStore config) {
+    public DominoStore(ConfigType type, ConfigConnection config) {
         super(type, config);
     }
 
@@ -105,12 +105,12 @@ public class DominoStore extends Store {
     //==========================
     //Private
     private String getUrl(){
-        return this.getConfig().getHost()
+        return this.getConnection().getHost()
                 +this.getType().getUri();
     }
 
     private String getBasicAuthToken(){
-        String token = this.getConfig().getUsername()+":"+this.getConfig().getPassword();
+        String token = this.getConnection().getUsername()+":"+this.getConnection().getPassword();
         token = "Basic "+ Base64.getEncoder().encodeToString(token.getBytes());
         return (token);
     }
@@ -148,8 +148,6 @@ public class DominoStore extends Store {
 }
 
 /*
-public class DominoDataSource extends DataSource {
-
     public String searchByKey(String collection, String key, boolean exactMatch, String params) throws Exception {
         String keyParams="systemcolumns=0x0000&compact=true";
         keyParams+="&keys="+key+"&keysexactmatch=";
@@ -164,8 +162,4 @@ public class DominoDataSource extends DataSource {
         }
         return getCollection(collection,keyParams);
     }
-
-
-
-}
  */

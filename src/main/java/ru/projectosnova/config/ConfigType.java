@@ -1,22 +1,17 @@
 package ru.projectosnova.config;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
-@Entity
 public class ConfigType {
 
-    @Id
     private Long id;
     private String category;
     private String name;
-    private String storage;
+    private String connection;
     private String uri;
 
-    public ConfigType(String category, String name,  String storage, String uri) {
+    public ConfigType(String category, String name,  String connection, String uri) {
         this.category = category;
         this.name = name;
-        this.storage = storage;
+        this.connection = connection;
         this.uri = uri;
     }
 
@@ -36,12 +31,12 @@ public class ConfigType {
         this.name = name;
     }
 
-    public String getStorage() {
-        return storage;
+    public String getConnection() {
+        return connection;
     }
 
-    public void setStorage(String storage) {
-        this.storage = storage;
+    public void setConnection(String connection) {
+        this.connection = connection;
     }
 
     public String getCategory() {
@@ -64,7 +59,7 @@ public class ConfigType {
     public String toString() {
         return "ObjectType{" +
                 "name='" + name + '\'' +
-                ", storage='" + storage + '\'' +
+                ", storage='" + connection + '\'' +
                 '}';
     }
 }

@@ -1,23 +1,23 @@
 package ru.projectosnova.store;
 
-import ru.projectosnova.config.ConfigStore;
+import ru.projectosnova.config.ConfigConnection;
 import ru.projectosnova.config.ConfigType;
 
 public abstract class Store {
-    protected ConfigStore config;
+    protected ConfigConnection connection;
     protected ConfigType type;
 
-    public Store(ConfigType type, ConfigStore config) {
+    public Store(ConfigType type, ConfigConnection config) {
         this.type = type;
-        this.config = config;
+        this.connection = config;
     }
 
-    public ConfigStore getConfig() {
-        return config;
+    public ConfigConnection getConnection() {
+        return connection;
     }
 
-    public void setConfig(ConfigStore config) {
-        this.config = config;
+    public void setConnection(ConfigConnection connection) {
+        this.connection = connection;
     }
 
     public ConfigType getType() {

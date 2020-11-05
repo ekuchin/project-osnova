@@ -1,34 +1,72 @@
 package ru.projectosnova.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.projectosnova.store.Store;
 import ru.projectosnova.store.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 @Service
 public class Config {
 
-    @Autowired
-    private ConfigTypeRepository repoTypes;
-    @Autowired
-    private ConfigStoreRepository repoStorages;
+    @Value("${osnova.config.type}")
+    private String type;
 
-    private ArrayList<ConfigStore> storages;
+    @Value("${osnova.config.host}")
+    private String host;
+
+    @Value("${osnova.config.username}")
+    private String username;
+
+    @Value("${osnova.config.password}")
+    private String password;
+
+    @Value("${osnova.config.uri}")
+    private String uri;
+
+    @Value("${osnova.config.collection.stores}")
+    private String сollectionStores;
+
+    @Value("${osnova.config.collection.types}")
+    private String сollectionTypes;
+
+    private ArrayList<ConfigConnection> stores;
     private ArrayList<ConfigType> types;
 
-    public Config() {
-        ConfigStore domino = new ConfigStore("domino-test", "domino","https://localhost:443", "domino", "domino");
-        ConfigStore mongo = new ConfigStore("mongo-test", "mongo","mongodb://localhost:27017", "mongo", "mongo");
+    public String getType() {
+        return type;
+    }
 
-        ConfigType dogs = new ConfigType("mk","dogs","domino-test","/osnova/config.nsf");
-        ConfigType cats = new ConfigType("mk","cats", "mongo-test", "/osnova-config");
+    public void setType(String type) {
+        this.type = type;
+    }
 
-        this.storages = new ArrayList<>(Arrays.asList(domino,mongo));
-        this.types = new ArrayList<>(Arrays.asList(dogs,cats));
+    public Config() throws Exception {
 
+        //TODO config must be @Bean
+
+        /*
+        Limitaton:
+        Configuraton of stores and types must be stored on one server,
+        one database, but probably in different collections
+         */
+
+        /*
+        ConfigConnection configConnection = new ConfigConnection("config", type,host, username, password);
+        ConfigType configDB = new ConfigType("system","stores","config",uri);
+
+
+
+        Store configStore = getStore(configConnection, configDB);
+
+        String str = configStore.findAll(сollectionStores).toString();
+        String typ = configStore.findAll(сollectionTypes).toString();
+
+        System.out.println(str);
+        System.out.println(typ);
+
+         */
         //storages = repoStorages.findAll();
         //types = repoTypes.findAll();
     }
@@ -40,19 +78,19 @@ public class Config {
               .findFirst()
               .orElseThrow(()->new Exception("Object type not found - "+category+", "+typeName));
 
-      ConfigStore config = storages.stream()
-              .filter(t->t.getName().equals(type.getStorage()))
+      ConfigConnection store = stores.stream()
+              .filter(t->t.getName().equals(type.getConnection()))
               .findFirst()
-              .orElseThrow(()->new Exception("Store type not found - "+type.getStorage()));
+              .orElseThrow(()->new Exception("Store type not found - "+type.getConnection()));
 
-        return getStore(type, config);
+        return getStore(store, type);
     }
 
-    private Store getStore(ConfigType type, ConfigStore config) throws Exception {
+    private Store getStore(ConfigConnection config, ConfigType type) throws Exception {
         switch(config.getType()) {
             case "domino":
                 return new DominoStore(type, config);
-            case "mongo":
+            case "mongodb":
                 return new MongoStore(type, config);
             default:
                 throw new Exception("Store type not found - "+config.getName());
@@ -60,8 +98,8 @@ public class Config {
         }
     }
 
-    public void addStore(ConfigStore store){
-        this.storages.add(store);
+    public void addStore(ConfigConnection store){
+        this.stores.add(store);
     }
 
     public void addType(ConfigType type){
