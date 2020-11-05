@@ -14,6 +14,9 @@ import ru.projectosnova.config.*;
 })
 public class ProjectOsnovaApplication implements CommandLineRunner{
 
+	@Autowired
+	Config config;
+
 	public static void main(String[] args) {
 		SpringApplication.run(ProjectOsnovaApplication.class, args);
 	}
@@ -22,6 +25,9 @@ public class ProjectOsnovaApplication implements CommandLineRunner{
 	public void run(String... args) throws Exception {
 
 	System.out.println("Hello, Osnova");
+
+	config.getConnections().forEach(System.out::println);
+	config.getTypes().forEach(System.out::println);
 
 	}
 

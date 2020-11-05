@@ -1,12 +1,17 @@
 package ru.projectosnova.config;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.Converter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.projectosnova.store.Store;
+import ru.projectosnova.utils.Transform;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Configuration
 public class BeansConfig {
@@ -14,8 +19,14 @@ public class BeansConfig {
     @Value("${osnova.config.type}")
     private String type;
 
+    @Value("${osnova.config.protocol}")
+    private String protocol;
+
     @Value("${osnova.config.host}")
     private String host;
+
+    @Value("${osnova.config.port}")
+    private String port;
 
     @Value("${osnova.config.username}")
     private String username;
@@ -41,24 +52,20 @@ public class BeansConfig {
     @Bean("config")
     public Config createConfig() throws Exception {
 
-        ConfigConnection configConnection = new ConfigConnection("config", type,host, username, password);
+        ConfigConnection configConnection = new ConfigConnection("config", type, protocol, host, port, username, password);
         ConfigType configDB = new ConfigType("system","stores","config",uri);
 
         Store configStore = Store.getStore(configConnection, configDB);
 
-        List<String> str = configStore.findAllAsList(сollectionStores);
-        List<String> typ = configStore.findAllAsList(сollectionTypes);
+        ArrayList<ConfigConnection> connections = configStore
+                .findAllAsList(сollectionStores).stream()
+                .map(s-> Transform.jsonToObject(s,ConfigConnection.class))
+                .collect(Collectors.toCollection(ArrayList::new));
 
-        System.out.println("Stores");
-        str.forEach(System.out::println);
-        //System.out.println(str);
-        //System.out.println(typ);
-
-        ArrayList<ConfigConnection> connections = null;
-        ArrayList<ConfigType> types = null;
-
-        //storages = repoStorages.findAll();
-        //types = repoTypes.findAll();
+        ArrayList<ConfigType> types = configStore
+                .findAllAsList(сollectionTypes).stream()
+                .map(s-> Transform.jsonToObject(s,ConfigType.class))
+                .collect(Collectors.toCollection(ArrayList::new));
 
         return new Config(connections, types);
     }

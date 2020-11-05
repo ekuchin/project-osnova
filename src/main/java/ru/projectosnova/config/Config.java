@@ -9,9 +9,7 @@ public class Config {
     private ArrayList<ConfigConnection> connections;
     private ArrayList<ConfigType> types;
 
-    public Config() {
-
-    }
+    public Config() {}
 
     public Config(ArrayList<ConfigConnection> connections, ArrayList<ConfigType> types) {
         this.connections = connections;
@@ -33,8 +31,6 @@ public class Config {
         return Store.getStore(connection, type);
     }
 
-
-
     public void addStore(ConfigConnection store){
         this.connections.add(store);
     }
@@ -43,5 +39,11 @@ public class Config {
         this.types.add(type);
     }
 
+    public ArrayList<ConfigConnection> getConnections() {
+        return connections;
+    }
 
+    public ArrayList<ConfigType> getTypes() {
+        return types;
+    }
 }

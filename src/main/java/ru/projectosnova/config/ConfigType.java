@@ -1,26 +1,22 @@
 package ru.projectosnova.config;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ConfigType {
 
-    private Long id;
     private String category;
     private String name;
     private String connection;
     private String uri;
 
-    public ConfigType(String category, String name,  String connection, String uri) {
+    public ConfigType() {}
+
+    public ConfigType(String category, String name, String connection, String uri) {
         this.category = category;
         this.name = name;
         this.connection = connection;
         this.uri = uri;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -57,9 +53,11 @@ public class ConfigType {
 
     @Override
     public String toString() {
-        return "ObjectType{" +
-                "name='" + name + '\'' +
-                ", storage='" + connection + '\'' +
+        return "ConfigType{" +
+                "category='" + category + '\'' +
+                ", name='" + name + '\'' +
+                ", connection='" + connection + '\'' +
+                ", uri='" + uri + '\'' +
                 '}';
     }
 }

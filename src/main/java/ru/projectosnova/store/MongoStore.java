@@ -17,22 +17,22 @@ public class MongoStore extends Store {
 
     public MongoStore(ConfigType type, ConfigConnection connection) {
         super(type, connection);
-
-        System.out.println("Mongodb connection string:");
-        System.out.println(getConnectionString());
-
-        // instantiate database and collection objects
+        System.out.println("Mongodb connection string: " +getConnectionString());
         MongoClient mongoClient = MongoClients.create(getConnectionString());
         this.mongodb = mongoClient.getDatabase(getDbName());
     }
 
     private String getConnectionString(){
 
-        String result = "mongodb://";
+        String result = connection.getProtocol();
         if (!connection.getUsername().equals("")){
             result+=connection.getUsername()+":"+connection.getPassword()+"@";
         }
-        result+=connection.getHost()+type.getUri();
+        result+=connection.getHost();
+        if (!connection.getProtocol().equals("")){
+            result+=":"+connection.getPort();
+        }
+        result+=type.getUri();
         return result;
     }
 
@@ -66,8 +66,7 @@ public class MongoStore extends Store {
 
     @Override
     public List<String> findAllAsList(String collection) throws Exception {
-        //MongoCollection<Document> result = mongodb.getCollection(collection);
-        return mongodb.getCollection(collection).find()
+         return mongodb.getCollection(collection).find()
                 .into(new ArrayList<Document>())
                 .stream().map(d->d.toJson())
                 .collect(Collectors.toList());
