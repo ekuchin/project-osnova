@@ -11,6 +11,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Base64;
+import java.util.List;
 
 public class DominoStore extends Store {
 
@@ -86,15 +87,22 @@ public class DominoStore extends Store {
         return true;
     }
 
+    @Override
+    public List<String> findAllAsList(String collection) throws Exception {
+        //TODO implement
+        return null;
+    }
+
     //Collection operations
     //==========================
-    public Object findAll(String collection) throws Exception {
+    public String findAllAsJson(String collection) throws Exception {
         String url=getUrl()
                 +"/api/data/collections/name/"+collection;
 
         HttpResponse<String> response = sendRequest(url, "GET","","");
 
         if (response.statusCode()==200){
+            //TODO parse Json-String as List of Json Strings ???
             return response.body();
         }
         else{

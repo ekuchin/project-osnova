@@ -3,6 +3,8 @@ package ru.projectosnova.store;
 import ru.projectosnova.config.ConfigConnection;
 import ru.projectosnova.config.ConfigType;
 
+import java.util.List;
+
 public abstract class Store {
     protected ConfigConnection connection;
     protected ConfigType type;
@@ -10,6 +12,18 @@ public abstract class Store {
     public Store(ConfigType type, ConfigConnection config) {
         this.type = type;
         this.connection = config;
+    }
+
+    public static Store getStore(ConfigConnection connection, ConfigType type) throws Exception {
+        switch(connection.getType()) {
+            case "domino":
+                return new DominoStore(type, connection);
+            case "mongodb":
+                return new MongoStore(type, connection);
+            default:
+                throw new Exception("Store type not found - "+connection.getName());
+
+        }
     }
 
     public ConfigConnection getConnection() {
@@ -35,6 +49,7 @@ public abstract class Store {
     abstract public boolean delete(String id)throws Exception;
 
     //Collection operations
-    abstract public Object findAll(String collection) throws Exception;
+    abstract public List<String> findAllAsList(String collection) throws Exception;
+    abstract public String findAllAsJson(String collection) throws Exception;
     //findByKey
 }

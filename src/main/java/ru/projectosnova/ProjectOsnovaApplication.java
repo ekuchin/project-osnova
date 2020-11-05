@@ -14,9 +14,6 @@ import ru.projectosnova.config.*;
 })
 public class ProjectOsnovaApplication implements CommandLineRunner{
 
-	@Autowired
-	Config config;
-
 	public static void main(String[] args) {
 		SpringApplication.run(ProjectOsnovaApplication.class, args);
 	}
@@ -24,7 +21,7 @@ public class ProjectOsnovaApplication implements CommandLineRunner{
 	@Override
 	public void run(String... args) throws Exception {
 
-	System.out.println(config.getType());
+	System.out.println("Hello, Osnova");
 
 	}
 
