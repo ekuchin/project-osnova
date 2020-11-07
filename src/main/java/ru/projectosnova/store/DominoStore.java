@@ -1,7 +1,5 @@
 package ru.projectosnova.store;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import ru.projectosnova.config.ConfigConnection;
 import ru.projectosnova.config.ConfigType;
 
@@ -21,10 +19,11 @@ public class DominoStore extends Store {
 
     //CRUD operations
     //==========================
+    @Override
     public String create(Object object)throws Exception{
 
         String url=getUrl()+"/api/data/documents?form="+type.getName();
-        String json =getJson(object);
+        String json = toJson(object);
 
         HttpResponse<String> response = sendRequest(url, "POST",json,"");
 
@@ -37,8 +36,13 @@ public class DominoStore extends Store {
 
     }
 
-    //==========================
     @Override
+    public <T> T read(String id, Class<T> targetClass) throws Exception {
+        return null;
+    }
+
+    //==========================
+    //@Override
     public Object read(String id) throws Exception {
         String url=getUrl()
                 +"/api/data/documents/unid/"+id+"?compact=true";
@@ -52,7 +56,7 @@ public class DominoStore extends Store {
     }
 
     //==========================
-
+    @Override
     public boolean update(String id, Object object, boolean replaceAll)throws Exception{
         String url=getUrl()+"/api/data/documents/unid/"+id;
 
@@ -61,7 +65,7 @@ public class DominoStore extends Store {
             method="PUT";
         }
 
-        String json=getJson(object);
+        String json=toJson(object);
 
         HttpResponse<String> response = sendRequest(url, method,json,"");
 
@@ -76,6 +80,7 @@ public class DominoStore extends Store {
     }
 
     //==========================
+    @Override
     public boolean delete(String id)throws Exception {
         String url=getUrl()+"/api/data/documents/unid/"+id;
 
@@ -95,6 +100,7 @@ public class DominoStore extends Store {
 
     //Collection operations
     //==========================
+    @Override
     public String findAllAsJson(String collection) throws Exception {
         String url=getUrl()
                 +"/api/data/collections/name/"+collection;
@@ -121,18 +127,6 @@ public class DominoStore extends Store {
         String token = this.getConnection().getUsername()+":"+this.getConnection().getPassword();
         token = "Basic "+ Base64.getEncoder().encodeToString(token.getBytes());
         return (token);
-    }
-
-    private String getJson(Object object) throws JsonProcessingException {
-
-        if(object instanceof String){
-            return (String) object;
-        }
-        else{
-            ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.writeValueAsString(object);
-        }
-
     }
 
     private HttpResponse<String> sendRequest(String url, String method, String json, String params) throws IOException, InterruptedException {

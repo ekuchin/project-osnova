@@ -9,6 +9,7 @@ public class ConfigType {
     private String name;
     private String connection;
     private String uri;
+    private String collection;
 
     public ConfigType() {}
 
@@ -49,6 +50,14 @@ public class ConfigType {
 
     public void setUri(String uri) {
         this.uri = uri;
+    }
+
+    public String getCollection() {
+        return collection;
+    }
+
+    public void setCollection(String collection) {
+        this.collection = collection;
     }
 
     @Override

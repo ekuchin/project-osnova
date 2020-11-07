@@ -1,5 +1,7 @@
 package ru.projectosnova.store;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import ru.projectosnova.config.ConfigConnection;
 import ru.projectosnova.config.ConfigType;
 
@@ -43,13 +45,30 @@ public abstract class Store {
     }
 
     //CRUD operations
+    //====================
+    //Object can be any Object except string, or JSON string
     abstract public String create(Object object)throws Exception;
-    abstract public Object read(String id)throws Exception;
-    abstract public boolean update(String id, Object object)throws Exception;
+
+    abstract public <T> T read(String id, Class<T> targetClass)throws Exception;
+
+    //Object can be any Object except string, or JSON string
+    abstract public boolean update(String id, Object object, boolean replaceAll)throws Exception;
     abstract public boolean delete(String id)throws Exception;
 
     //Collection operations
+    //====================
     abstract public List<String> findAllAsList(String collection) throws Exception;
     abstract public String findAllAsJson(String collection) throws Exception;
     //findByKey
+
+    protected String toJson(Object object) throws JsonProcessingException {
+
+        if(object instanceof String){
+            return (String) object;
+        }
+        else{
+            ObjectMapper objectMapper = new ObjectMapper();
+            return objectMapper.writeValueAsString(object);
+        }
+    }
 }

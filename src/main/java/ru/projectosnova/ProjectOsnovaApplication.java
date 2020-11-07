@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import ru.projectosnova.config.*;
+import ru.projectosnova.store.Store;
 
 @SpringBootApplication(exclude = {
 		MongoAutoConfiguration.class,
@@ -28,6 +29,15 @@ public class ProjectOsnovaApplication implements CommandLineRunner{
 
 	config.getConnections().forEach(System.out::println);
 	config.getTypes().forEach(System.out::println);
+
+	Store store = config.getStore("zef","visit");
+
+	//String visit = "{\"date\":{\"$date\":\"2020-06-10T19:00:00.000Z\"},\"street\":\"Циолковского\",\"building\":\"34\",\"kv\":\"1\"}";
+
+	String result = store.read("5fa4d618771dfa60bbef9b8b", String.class);
+	System.out.println(result);
+
+	//store.findAllAsList("visit").forEach(System.out::println);
 
 	}
 

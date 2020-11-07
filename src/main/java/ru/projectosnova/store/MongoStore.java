@@ -3,9 +3,15 @@ package ru.projectosnova.store;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
 import org.bson.Document;
+import org.bson.conversions.Bson;
+import org.bson.json.JsonMode;
+import org.bson.json.JsonWriterSettings;
+import org.bson.types.ObjectId;
 import ru.projectosnova.config.ConfigConnection;
 import ru.projectosnova.config.ConfigType;
+import ru.projectosnova.utils.Transform;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +23,7 @@ public class MongoStore extends Store {
 
     public MongoStore(ConfigType type, ConfigConnection connection) {
         super(type, connection);
-        System.out.println("Mongodb connection string: " +getConnectionString());
+        //System.out.println("Mongodb connection string: " +getConnectionString());
         MongoClient mongoClient = MongoClients.create(getConnectionString());
         this.mongodb = mongoClient.getDatabase(getDbName());
     }
@@ -42,18 +48,25 @@ public class MongoStore extends Store {
 
     @Override
     public String create(Object object) throws Exception {
-        //TODO implement
-        return null;
+        Document doc = Document.parse(toJson(object));
+        return mongodb.getCollection(type.getCollection()).insertOne(doc).getInsertedId().asObjectId().getValue().toString();
     }
 
     @Override
-    public Object read(String id) throws Exception {
-        //TODO implement
-        return null;
+    public <T> T read(String id, Class<T> targetClass) throws Exception {
+        Bson flt = Filters.eq("_id", new ObjectId(id));
+
+        String jsonResult = mongodb.getCollection(type.getCollection()).find(flt).first().toJson();
+        if (targetClass==String.class){
+            return (T) jsonResult;
+        }
+        else{
+            return Transform.jsonToObject(jsonResult,targetClass);
+        }
     }
 
     @Override
-    public boolean update(String id, Object object) throws Exception {
+    public boolean update(String id, Object object, boolean replaceAll) throws Exception {
         //TODO implement
         return false;
     }
@@ -72,11 +85,14 @@ public class MongoStore extends Store {
                 .collect(Collectors.toList());
     }
 
+    //Short version with default collection
+    public List<String> findAllAsList() throws Exception {
+        return findAllAsList(type.getCollection());
+    }
+
     @Override
     public String findAllAsJson(String collection) throws Exception {
         //TODO implement
         return null;
     }
-
-
 }
