@@ -27,14 +27,14 @@ public class ProjectOsnovaApplication implements CommandLineRunner{
 
 	System.out.println("Hello, Osnova");
 
-	config.getConnections().forEach(System.out::println);
-	config.getTypes().forEach(System.out::println);
+	//config.getConnections().forEach(System.out::println);
+	//config.getTypes().forEach(System.out::println);
 
 	Store store = config.getStore("zef","visit");
 
 	//String visit = "{\"date\":{\"$date\":\"2020-06-10T19:00:00.000Z\"},\"street\":\"Циолковского\",\"building\":\"34\",\"kv\":\"1\"}";
 
-	String result = store.read("5fa4d618771dfa60bbef9b8b", String.class);
+	boolean result = store.delete("5fa6d512e4b97732e6af011b");
 	System.out.println(result);
 
 	//store.findAllAsList("visit").forEach(System.out::println);

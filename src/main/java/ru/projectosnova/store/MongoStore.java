@@ -68,13 +68,16 @@ public class MongoStore extends Store {
     @Override
     public boolean update(String id, Object object, boolean replaceAll) throws Exception {
         //TODO implement
+
+
+
         return false;
     }
 
     @Override
     public boolean delete(String id) throws Exception {
-        //TODO implement
-        return false;
+        Bson flt = Filters.eq("_id", new ObjectId(id));
+        return mongodb.getCollection(type.getCollection()).deleteOne(flt).getDeletedCount()==1;
     }
 
     @Override

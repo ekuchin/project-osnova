@@ -24,7 +24,6 @@ public abstract class Store {
                 return new MongoStore(type, connection);
             default:
                 throw new Exception("Store type not found - "+connection.getName());
-
         }
     }
 
@@ -59,8 +58,14 @@ public abstract class Store {
     //====================
     abstract public List<String> findAllAsList(String collection) throws Exception;
     abstract public String findAllAsJson(String collection) throws Exception;
+
     //findByKey
 
+    //Create many
+    //Update many = by filter + template
+    //Delete many = by filter
+
+    //Common operations
     protected String toJson(Object object) throws JsonProcessingException {
 
         if(object instanceof String){
