@@ -1,8 +1,5 @@
 package ru.projectosnova.config;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.util.Converter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,7 +7,6 @@ import ru.projectosnova.store.Store;
 import ru.projectosnova.utils.Transform;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Configuration

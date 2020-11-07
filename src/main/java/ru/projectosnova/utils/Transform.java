@@ -7,7 +7,7 @@ public class Transform {
 
     public static <T> T jsonToObject(String json, Class<T> targetClass){
         ObjectMapper mapper = new ObjectMapper();
-        T result = null;
+        T result;
         try {
             result = mapper.readValue(json, targetClass);
         } catch (JsonProcessingException e) {
