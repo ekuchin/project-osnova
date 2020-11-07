@@ -32,9 +32,9 @@ public class ProjectOsnovaApplication implements CommandLineRunner{
 
 	Store store = config.getStore("zef","visit");
 
-	//String visit = "{\"date\":{\"$date\":\"2020-06-10T19:00:00.000Z\"},\"street\":\"Циолковского\",\"building\":\"34\",\"kv\":\"1\"}";
+	String upd = "{\"street\":\"Айвазовского\"}";
 
-	boolean result = store.delete("5fa6d512e4b97732e6af011b");
+	boolean result = store.update("5fa6d3dde7ac6574acd9e18c",upd,true);
 	System.out.println(result);
 
 	//store.findAllAsList("visit").forEach(System.out::println);

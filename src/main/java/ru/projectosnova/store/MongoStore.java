@@ -6,8 +6,6 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import org.bson.Document;
 import org.bson.conversions.Bson;
-import org.bson.json.JsonMode;
-import org.bson.json.JsonWriterSettings;
 import org.bson.types.ObjectId;
 import ru.projectosnova.config.ConfigConnection;
 import ru.projectosnova.config.ConfigType;
@@ -53,7 +51,7 @@ public class MongoStore extends Store {
     }
 
     @Override
-    public <T> T read(String id, Class<T> targetClass) throws Exception {
+    public <T> T read(String id, Class<T> targetClass) {
         Bson flt = Filters.eq("_id", new ObjectId(id));
 
         String jsonResult = mongodb.getCollection(type.getCollection()).find(flt).first().toJson();
@@ -67,15 +65,20 @@ public class MongoStore extends Store {
 
     @Override
     public boolean update(String id, Object object, boolean replaceAll) throws Exception {
-        //TODO implement
+        Bson flt = Filters.eq("_id", new ObjectId(id));
+        Document update = Document.parse(toJson(object));
 
-
-
-        return false;
+        if (replaceAll){
+            return mongodb.getCollection(type.getCollection()).replaceOne(flt,update).getModifiedCount()==1;
+        }
+        else{
+            Document setUpdate=new Document("$set",update);
+            return mongodb.getCollection(type.getCollection()).updateOne(flt,setUpdate).getModifiedCount()==1;
+        }
     }
 
     @Override
-    public boolean delete(String id) throws Exception {
+    public boolean delete(String id) {
         Bson flt = Filters.eq("_id", new ObjectId(id));
         return mongodb.getCollection(type.getCollection()).deleteOne(flt).getDeletedCount()==1;
     }
@@ -83,8 +86,8 @@ public class MongoStore extends Store {
     @Override
     public List<String> findAllAsList(String collection) throws Exception {
          return mongodb.getCollection(collection).find()
-                .into(new ArrayList<Document>())
-                .stream().map(d->d.toJson())
+                .into(new ArrayList<>())
+                .stream().map(Document::toJson)
                 .collect(Collectors.toList());
     }
 
