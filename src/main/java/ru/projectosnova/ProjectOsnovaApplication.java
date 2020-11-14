@@ -34,8 +34,8 @@ public class ProjectOsnovaApplication implements CommandLineRunner{
 
 	String upd = "{\"street\":\"Айвазовского\"}";
 
-	boolean result = store.update("5fa6d3dde7ac6574acd9e18c",upd,true);
-	System.out.println(result);
+	//boolean result = store.update("5fa6d3dde7ac6574acd9e18c",upd,true);
+	//System.out.println(result);
 
 	//store.findAllAsList("visit").forEach(System.out::println);
 

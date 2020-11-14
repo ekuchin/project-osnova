@@ -13,11 +13,12 @@ public class ConfigType {
 
     public ConfigType() {}
 
-    public ConfigType(String category, String name, String connection, String uri) {
+    public ConfigType(String category, String name, String connection, String uri, String collection) {
         this.category = category;
         this.name = name;
         this.connection = connection;
         this.uri = uri;
+        this.collection = collection;
     }
 
     public String getName() {

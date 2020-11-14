@@ -49,16 +49,18 @@ public class BeansConfig {
     public Config createConfig() throws Exception {
 
         ConfigConnection configConnection = new ConfigConnection("config", type, protocol, host, port, username, password);
-        ConfigType configDB = new ConfigType("system","stores","config",uri);
+        ConfigType configDB = new ConfigType("system","stores","config",uri,сollectionStores);
+        ConfigType typeDB = new ConfigType("system","stores","config",uri, сollectionTypes);
 
         Store configStore = Store.getStore(configConnection, configDB);
+        Store typeStore = Store.getStore(configConnection, typeDB);
 
         ArrayList<ConfigConnection> connections = configStore
                 .findAllAsList(сollectionStores).stream()
                 .map(s-> Transform.jsonToObject(s,ConfigConnection.class))
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        ArrayList<ConfigType> types = configStore
+        ArrayList<ConfigType> types = typeStore
                 .findAllAsList(сollectionTypes).stream()
                 .map(s-> Transform.jsonToObject(s,ConfigType.class))
                 .collect(Collectors.toCollection(ArrayList::new));
