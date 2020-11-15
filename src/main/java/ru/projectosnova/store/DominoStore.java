@@ -43,7 +43,7 @@ public class DominoStore extends Store {
 
     //==========================
     //@Override
-    public Object read(String id) throws Exception {
+    public String read(String id) throws Exception {
         String url=getUrl()
                 +"/api/data/documents/unid/"+id+"?compact=true";
 
@@ -93,13 +93,19 @@ public class DominoStore extends Store {
     }
 
     @Override
-    public List<String> findAllAsList(String collection) throws Exception {
+    public List<String> findAll(String collection) throws Exception {
         //TODO implement
+        return null;
+    }
+
+    @Override
+    public List<String> findAll() throws Exception {
         return null;
     }
 
     //Collection operations
     //==========================
+    /*
     @Override
     public String findAllAsJson(String collection) throws Exception {
         String url=getUrl()
@@ -115,6 +121,7 @@ public class DominoStore extends Store {
             throw new Exception(response.body());
         }
     }
+     */
 
     //==========================
     //Private

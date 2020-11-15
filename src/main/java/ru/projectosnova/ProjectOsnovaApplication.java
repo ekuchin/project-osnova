@@ -27,18 +27,6 @@ public class ProjectOsnovaApplication implements CommandLineRunner{
 
 	System.out.println("Hello, Osnova");
 
-	//config.getConnections().forEach(System.out::println);
-	//config.getTypes().forEach(System.out::println);
-
-	Store store = config.getStore("zef","visit");
-
-	String upd = "{\"street\":\"Айвазовского\"}";
-
-	//boolean result = store.update("5fa6d3dde7ac6574acd9e18c",upd,true);
-	//System.out.println(result);
-
-	//store.findAllAsList("visit").forEach(System.out::println);
-
 	}
 
 }

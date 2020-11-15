@@ -8,7 +8,7 @@ import ru.projectosnova.config.ConfigConnection;
 import ru.projectosnova.config.ConfigType;
 import ru.projectosnova.store.Store;
 import ru.projectosnova.test.Cat;
-import ru.projectosnova.utils.Transform;
+import ru.projectosnova.util.Transform;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,7 +45,7 @@ public class MongoStoreTest {
         ids.add(store.create("{\"name\":\"Edward\",\"breed\":\"Britain\",\"weight\":4,\"isAngry\":false}"));
         ids.add(store.create("{\"name\":\"Murka\",\"breed\":\"Breedless\",\"weight\":3,\"isAngry\":true}"));
 
-        ArrayList<Cat> cats = store.findAllAsList(COLLECTION)
+        ArrayList<Cat> cats = store.findAll(COLLECTION)
                 .stream().map(c-> Transform.jsonToObject(c,Cat.class))
                 .collect(Collectors.toCollection(ArrayList::new));
 
@@ -60,7 +60,7 @@ public class MongoStoreTest {
         store.update(ids.get(2),"{\"weight\":6}",false);
         store.update(ids.get(3),"{\"isAngry\":false}",false);
 
-        cats = store.findAllAsList(COLLECTION)
+        cats = store.findAll(COLLECTION)
                 .stream().map(c-> Transform.jsonToObject(c,Cat.class))
                 .collect(Collectors.toCollection(ArrayList::new));
 
@@ -78,7 +78,7 @@ public class MongoStoreTest {
         store.delete(ids.get(3));
         store.delete(ids.get(0));
 
-        cats = store.findAllAsList(COLLECTION)
+        cats = store.findAll(COLLECTION)
                 .stream().map(c-> Transform.jsonToObject(c,Cat.class))
                 .collect(Collectors.toCollection(ArrayList::new));
 
@@ -87,7 +87,7 @@ public class MongoStoreTest {
         store.delete(ids.get(1));
         store.delete(ids.get(2));
 
-        cats = store.findAllAsList(COLLECTION)
+        cats = store.findAll(COLLECTION)
                 .stream().map(c-> Transform.jsonToObject(c,Cat.class))
                 .collect(Collectors.toCollection(ArrayList::new));
 

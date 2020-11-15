@@ -1,4 +1,4 @@
-package ru.projectosnova.utils;
+package ru.projectosnova.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

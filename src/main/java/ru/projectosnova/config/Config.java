@@ -4,6 +4,7 @@ import ru.projectosnova.store.Store;
 
 import java.util.ArrayList;
 
+//Not @component because it is @bean :)
 public class Config {
 
     private ArrayList<ConfigConnection> connections;

@@ -9,7 +9,7 @@ import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import ru.projectosnova.config.ConfigConnection;
 import ru.projectosnova.config.ConfigType;
-import ru.projectosnova.utils.Transform;
+import ru.projectosnova.util.Transform;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +63,10 @@ public class MongoStore extends Store {
         }
     }
 
+    public String read(String id){
+        return read(id, String.class);
+    }
+
     @Override
     public boolean update(String id, Object object, boolean replaceAll) throws Exception {
         Bson flt = Filters.eq("_id", new ObjectId(id));
@@ -84,7 +88,7 @@ public class MongoStore extends Store {
     }
 
     @Override
-    public List<String> findAllAsList(String collection) throws Exception {
+    public List<String> findAll(String collection) throws Exception {
          return mongodb.getCollection(collection).find()
                 .into(new ArrayList<>())
                 .stream().map(Document::toJson)
@@ -92,13 +96,8 @@ public class MongoStore extends Store {
     }
 
     //Short version with default collection
-    public List<String> findAllAsList() throws Exception {
-        return findAllAsList(type.getCollection());
+    public List<String> findAll() throws Exception {
+        return findAll(type.getCollection());
     }
 
-    @Override
-    public String findAllAsJson(String collection) throws Exception {
-        //TODO implement
-        return null;
-    }
 }

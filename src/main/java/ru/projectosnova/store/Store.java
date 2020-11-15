@@ -49,6 +49,7 @@ public abstract class Store {
     abstract public String create(Object object)throws Exception;
 
     abstract public <T> T read(String id, Class<T> targetClass)throws Exception;
+    abstract public String read(String id) throws Exception;
 
     //Object can be any Object except string, or JSON string
     abstract public boolean update(String id, Object object, boolean replaceAll)throws Exception;
@@ -56,8 +57,8 @@ public abstract class Store {
 
     //Collection operations
     //====================
-    abstract public List<String> findAllAsList(String collection) throws Exception;
-    abstract public String findAllAsJson(String collection) throws Exception;
+    abstract public List<String> findAll(String collection) throws Exception;
+    abstract public List<String> findAll() throws Exception;
 
     //findByKey
 

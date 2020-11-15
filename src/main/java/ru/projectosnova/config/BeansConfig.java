@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.projectosnova.store.Store;
-import ru.projectosnova.utils.Transform;
+import ru.projectosnova.util.Transform;
 
 import java.util.ArrayList;
 import java.util.stream.Collectors;
@@ -56,12 +56,12 @@ public class BeansConfig {
         Store typeStore = Store.getStore(configConnection, typeDB);
 
         ArrayList<ConfigConnection> connections = configStore
-                .findAllAsList(сollectionStores).stream()
+                .findAll(сollectionStores).stream()
                 .map(s-> Transform.jsonToObject(s,ConfigConnection.class))
                 .collect(Collectors.toCollection(ArrayList::new));
 
         ArrayList<ConfigType> types = typeStore
-                .findAllAsList(сollectionTypes).stream()
+                .findAll(сollectionTypes).stream()
                 .map(s-> Transform.jsonToObject(s,ConfigType.class))
                 .collect(Collectors.toCollection(ArrayList::new));
 
